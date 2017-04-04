@@ -39,6 +39,14 @@ h4.title_sub_sub {
 	border-bottom: 1px solid grey;
 }
 
+#period {
+	padding-bottom: 30px;
+}
+
+#period span {
+	font-weight: 700;
+}
+
 ol {
 	list-style-position: inside;
 }

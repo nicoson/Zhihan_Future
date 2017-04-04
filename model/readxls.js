@@ -3,7 +3,7 @@ var parseXlsx = require('excel');
 function readxls(){};
 
 readxls.read = function(res) {
-	parseXlsx('../test.xlsx', 1, function(err, data) {
+	parseXlsx('./test.xlsx', 1, function(err, data) {
 		if(err) throw err;
 		// data is an array of arrays
 		//return data;
