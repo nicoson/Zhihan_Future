@@ -1,9 +1,21 @@
 var parseXlsx = require('excel');
+var path = require("path");
+var fs = require("fs");
 
 function readxls(){};
 
-readxls.read = function(res) {
-	parseXlsx('./test.xlsx', 1, function(err, data) {
+readxls.read = function(url, res) {
+	var filename = path.basename(url);
+	var filedir = path.normalize(__dirname+'/'+'../docs/' + filename + ".xlsx");
+	if(!fs.existsSync(filedir)) {
+		filedir = path.normalize(__dirname+'/'+'../docs/' + filename + ".xls");
+		if(!fs.existsSync(filedir)) {			
+			return res.render("badurl");
+		}
+	}
+	console.log(filedir);
+
+	parseXlsx(filedir, 1, function(err, data) {
 		if(err) throw err;
 		// data is an array of arrays
 		//return data;
@@ -17,4 +29,4 @@ readxls.read = function(res) {
 
 module.exports = readxls;
 
-//readxls.read();
+//readxls.read({url: "/report/test"});

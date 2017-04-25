@@ -1,0 +1,167 @@
+* {
+	padding: 0;
+	margin: 0;
+    box-sizing: border-box;
+}
+
+body {
+	padding: 0 5vw;
+	height: 100vh;
+}
+
+header h2 {
+	text-align: center;
+    padding: 3vh;
+    height: 9vh;
+    font-size: 3vh;
+}
+
+section {
+
+}
+
+footer {
+	position: absolute;
+	bottom: 0;
+	border-top: 1px solid #aaa;
+	width: 90vw;
+}
+
+footer p {
+	padding: 2vh;
+	height: 6vh;
+	font-size: 2vh;
+	text-align: center;
+}
+
+#add_files {
+	background: lightblue;
+	padding: 2vh 2vw;
+}
+
+#add_files button {
+    color: #fff;
+    background-color: #337ab7;
+    border-color: #2e6da4;
+    padding: 0 12px;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.42857143;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    -ms-touch-action: manipulation;
+    touch-action: manipulation;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    background-image: none;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    margin-left: 1vw;
+}
+
+#add_files .progressBar {
+	display: inline-block;
+}
+
+#add_files progress {
+	background-color: #5cb85c;
+	background-image: linear-gradient(45deg,rgba(255,255,255,.15) 25%,transparent 25%,transparent 50%,rgba(255,255,255,.15) 50%,rgba(255,255,255,.15) 75%,transparent 75%,transparent);
+}
+
+#xlsfile {
+	color: #333;
+    background-color: #fff;
+    border-color: #ccc;
+    text-align: center;
+}
+
+#file_list {
+	height: 75vh;
+	margin-top: 1vh;
+	overflow-y: auto;
+	overflow-x: hidden;
+}
+
+#file_list table {
+	border-collapse: collapse;
+	width: 100%;
+}
+
+#file_list table tr td:first-child, #file_list table tr td:nth-of-type(2), #file_list table tr td:last-child {
+	text-align: center;
+}
+
+#file_list table tr:first-child {
+	vertical-align: bottom;
+    border-bottom: 2px solid #ddd;
+}
+
+#file_list table tr:nth-of-type(even) {
+	background: #d9edf7;
+}
+
+.fa-times {
+	color: lightgrey;
+}
+
+.fa-times:hover {
+	color: red;
+	cursor: pointer;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*  define the scrollbar */
+::-webkit-scrollbar  
+{  
+    width: 8px;  
+    height: 8px;  
+    background-color: #F5F5F5;  
+}  
+
+::-webkit-scrollbar-track  
+{  
+    // background-color: #F5F5F5;
+    // border-left: 1px solid #ccc;
+}  
+
+::-webkit-scrollbar-thumb  
+{   
+    background-color: #ddd;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+}
+
+::scrollbar  
+{  
+    width: 8px;  
+    height: 8px;  
+    background-color: #F5F5F5;  
+}  
+
+::scrollbar-track  
+{  
+    background-color: #F5F5F5;
+    border-left: 1px solid #ccc;
+}  
+
+::scrollbar-thumb  
+{   
+    background-color: #ddd;
+    border: 1px solid #ccc;
+}
