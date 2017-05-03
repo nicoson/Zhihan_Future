@@ -294,6 +294,17 @@ function drawChart2(data) {
 	            //         formatter: '{b}'
 	            //     }
 	            // },
+	            itemStyle: {
+	            	normal: {
+	            		color: function(param) {
+	            			var colorlist = ['#d48265', '#6e7074'];
+	            			if(param.data >= 0)
+	            				return colorlist[0];
+	            			else
+	            				return colorlist[1];
+	            		}
+	            	}
+	            },
 	            data: ydata
 	        }
 	    ],
