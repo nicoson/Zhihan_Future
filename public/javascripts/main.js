@@ -183,7 +183,7 @@ function drawChart(xdata, ydata) {
 
 	var option = {
 	    title: {
-	        text: '组合管理业绩图',
+	        text: '净值曲线',
 	        //textAlign: 'right'
 	    },
 	    tooltip: {
