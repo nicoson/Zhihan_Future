@@ -1,3 +1,6 @@
+//	this js is replaced by report.js
+//	this file is based on the exceljs module
+
 //	deal with raw data
 rawData = rawData.split(",");
 var data = [],
@@ -32,7 +35,7 @@ for(var i=0; i<(rawData.length/3); i++) {
 		if(tempMonth != dateIndexMonth.slice(-1)[0][0]) {
 			dateIndexMonth.push([tempMonth, i]);
 		}
-	}	
+	}
 }
 
 fe.push(crj[0]);

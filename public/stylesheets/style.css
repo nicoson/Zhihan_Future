@@ -5,7 +5,7 @@
 
 body {
 	padding: 50px;
-	font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+	font: 14px "microsoft yahei", "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 
 a {
@@ -21,29 +21,37 @@ h2 {
 	text-align: center;
 }
 
-#content {
-	padding: 30px 0 0 0;
+.content {
+	padding: 6vh 0;
 
 	display: flex;
 	flex-direction: row;
 	flex-wrap: wrap;
 	justify-content: space-around;
 	align-items: flex-start;
+	border-bottom: 2px solid grey;
 }
 
 .content-item {
 
 }
 
+.content p.productTitle {
+	width: 100%;
+	padding: 2vh 0 4vh 0;
+	font-size: 3vh;
+	font-weight: 700;
+}
+
 h4.title_sub_sub {
 	border-bottom: 1px solid grey;
 }
 
-#period {
+.period {
 	padding-bottom: 30px;
 }
 
-#period span {
+.period span {
 	font-weight: 700;
 }
 
@@ -82,6 +90,6 @@ table tr:first-child th {
 	color: white;
 }
 
-#chart_1 {
+.chart_1 {
 	margin-bottom: 50px;
 }
