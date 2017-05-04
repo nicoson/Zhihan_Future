@@ -301,7 +301,7 @@ function drawChart2(data, ele) {
 		ydata = [];
 	for(var i=0; i<data.length; i++) {
 		xdata.push(data[i][0]);
-		ydata.push(data[i][1]);
+		ydata.push(parseFloat(data[i][1].toFixed(4)));
 	}
 
 	var labelRight = {
