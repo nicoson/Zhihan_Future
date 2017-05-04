@@ -38,7 +38,7 @@ readxls.read = function(url, res) {
 			result[i].data.push([worksheets[i].data[j][0], worksheets[i].data[j][1], worksheets[i].data[j][2]]);
 		}
 	}
-	console.log(JSON.stringify(result[1]));
+	//console.log(JSON.stringify(result[1]));
 	res.render('report', { title: 'Express', data: JSON.stringify(result) });
 }
 
