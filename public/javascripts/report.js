@@ -48,6 +48,7 @@ function ratioGenerator(item) {
 	this.domEle = "";		//	virtual dom element for binding tables and charts
 
 	this.init = function() {
+		if(this.data.length == 0) return;
 		this.dataHandler();
 		this.ratioCalculator();
 		this.DOMGenerator();
