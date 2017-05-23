@@ -34,12 +34,12 @@ footer p {
 	text-align: center;
 }
 
-#add_files {
+.upload-bar {
 	background: lightblue;
 	padding: 2vh 2vw;
 }
 
-#add_files button {
+.upload-bar button {
     color: #fff;
     background-color: #337ab7;
     border-color: #2e6da4;
@@ -63,44 +63,44 @@ footer p {
     margin-left: 1vw;
 }
 
-#add_files .progressBar {
+.upload-bar .progressBar {
 	display: inline-block;
 }
 
-#add_files progress {
+.upload-bar progress {
 	background-color: #5cb85c;
 	background-image: linear-gradient(45deg,rgba(255,255,255,.15) 25%,transparent 25%,transparent 50%,rgba(255,255,255,.15) 50%,rgba(255,255,255,.15) 75%,transparent 75%,transparent);
 }
 
-#xlsfile {
+#xlsfile, #xlsfile2 {
 	color: #333;
     background-color: #fff;
     border-color: #ccc;
     text-align: center;
 }
 
-#file_list {
-	height: 75vh;
+.list-table {
+	height: 34vh;
 	margin-top: 1vh;
 	overflow-y: auto;
 	overflow-x: hidden;
 }
 
-#file_list table {
+.list-table table {
 	border-collapse: collapse;
 	width: 100%;
 }
 
-#file_list table tr td:first-child, #file_list table tr td:nth-of-type(2), #file_list table tr td:last-child {
+.list-table table tr td:first-child, .list-table table tr td:nth-of-type(2), .list-table table tr td:last-child {
 	text-align: center;
 }
 
-#file_list table tr:first-child {
+.list-table table tr:first-child {
 	vertical-align: bottom;
     border-bottom: 2px solid #ddd;
 }
 
-#file_list table tr:nth-of-type(even) {
+.list-table table tr:nth-of-type(even) {
 	background: #d9edf7;
 }
 

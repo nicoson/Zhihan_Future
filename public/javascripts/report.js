@@ -3,8 +3,11 @@ $(document).ready(function(){
 	rawData = rawData.replace(/&#34;/g, "\"");
 	rawData = JSON.parse(rawData);
 
-	for (var i=0; i<rawData.length; i++) {
-		var reportObj = new ratioGenerator(rawData[i]);
+	productData = rawData.prod;
+	baseData = rawData.base;
+
+	for (var i=0; i<productData.length; i++) {
+		var reportObj = new ratioGenerator(productData[i]);
 		reportObj.init();
 		$("section").append(reportObj.domEle);
 	}

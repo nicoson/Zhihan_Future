@@ -12,22 +12,46 @@
 		<h2>芷瀚报告控制台</h2>
 	</header>
 	<section>
-		<div id="add_files">
+		<!-- add product file -->
+		<div id="add_files" class="upload-bar">
 			<label for="xlsfile">上传报告</label>
 			<input id="xlsfile" name="xlsfile" type="file" />
-			<button onclick="submitFile()">submit</button>
+			<button onclick="submitProductFile()">submit</button>
 			<div class="progressBar" style="display: none">
 				<progress class="bar" value="0" max="100">0 %</progress>
 			</div>
 		</div>
 
-		<div id="file_list">
+		<div id="file_list" class="list-table">
 			<h4>报告列表</h4>
 			<table>
 				<tr>
 					<th>#</th>
 					<th>报告标题</th>
 					<th>报告链接地址</th>
+					<th>操作</th>
+				</tr>
+			</table>
+		</div>
+
+
+		<!-- add base index file -->
+		<div id="add_bases" class="upload-bar">
+			<label for="xlsfile">上传指标</label>
+			<input id="xlsfile2" name="xlsfile2" type="file" />
+			<button onclick="submitBaseFile()">submit</button>
+			<div class="progressBar" style="display: none">
+				<progress class="bar" value="0" max="100">0 %</progress>
+			</div>
+		</div>
+
+		<div id="base_list" class="list-table">
+			<h4>指标列表</h4>
+			<table>
+				<tr>
+					<th>#</th>
+					<th>指标标题</th>
+					<th>指标链接地址</th>
 					<th>操作</th>
 				</tr>
 			</table>
@@ -52,8 +76,7 @@
 
 		});
 
-
-		function submitFile() {
+		function submitProductFile() {
 			var fd = new FormData();
 			var fileEle = document.getElementById("xlsfile");
 			fd.append("xls", fileEle.files[0]);
@@ -61,11 +84,28 @@
 			var bar = document.getElementsByTagName('progress')[0];
 			bar.value = 0;
 			bar.text = '0%';
-			$(".progressBar").toggle();
-			
+			$(".progressBar").eq(0).show();
+
+			submitFile(bar, fd, "/submitxls");
+		}
+
+		function submitBaseFile() {
+			var fd = new FormData();
+			var fileEle = document.getElementById("xlsfile2");
+			fd.append("xls", fileEle.files[0]);
+
+			var bar = document.getElementsByTagName('progress')[1];
+			bar.value = 0;
+			bar.text = '0%';
+			$(".progressBar").eq(1).show();
+
+			submitFile(bar, fd, "/submitbasexls");
+		}
+
+		function submitFile(bar, fd, url) {
 			// var progressBar = document.getElementsByClassName('progressBar')[0];
 			var xhr = new XMLHttpRequest();
-			xhr.open("POST", "/submitxls");
+			xhr.open("POST", url);
 			// 文件上传过程的回调
 			xhr.upload.onprogress = function(e) {
 				console.log(Math.round((e.loaded/e.total)*100)+'%')
@@ -74,19 +114,19 @@
 			}
 
 			/**
-			 *   e.loaded 文件已经上传了的大小
-			 *   e.total  文件总大小
-			  e.loaded/e.total)*100+'%'  转化成比例；
+			 *  e.loaded 文件已经上传了的大小
+			 *  e.total  文件总大小
+				e.loaded/e.total)*100+'%'  转化成比例；
 			 */
 			// 文件上传完毕的回调
 			xhr.upload.onloadend = function(e) {
 				console.log('接收完成'+e.loaded+'/'+e.total);
 				setTimeout(function(res){
-					$(".progressBar").toggle();
+					$(".progressBar").hide();
 				},1000)
 			}
 
-			xhr.onload = function(e) { 
+			xhr.onload = function(e) {
 				if(this.status == 200||this.status == 304){
 					updateListDom(JSON.parse(this.response));
 				}
@@ -97,25 +137,35 @@
 
 		function updateListDom(data) {
 			$("#file_list table tr:first-child").siblings().remove();
+			$("#base_list table tr:first-child").siblings().remove();
+
 			var ele = $("#file_list table");
 			var url = "";
-			for(var i=0; i<data.length; i++) {
-				url = data[i].split(".").slice(0,-1).join("");
+			for(var i=0; i<data.fileList.length; i++) {
+				url = data.fileList[i].split(".").slice(0,-1).join("");
 				url = "/report/" + url;
-				ele.append("<tr><td>"+(i+1)+"</td><td>"+data[i]+"</td><td><a href='"+url+"'>"+url+"</a></td><td><i class=\"fa fa-times\" aria-hidden=\"true\" onclick='deleteReport()'></i></td></tr>");
+				ele.append("<tr><td>"+(i+1)+"</td><td>"+data.fileList[i]+"</td><td><a href='"+url+"'>"+url+"</a></td><td><i class=\"fa fa-times\" aria-hidden=\"true\" onclick='deleteReport(1)'></i></td></tr>");
+			}
+
+			ele = $("#base_list table");
+			var url = "";
+			for(var i=0; i<data.baseList.length; i++) {
+				url = data.baseList[i].split(".").slice(0,-1).join("");
+				url = "/report/" + url;
+				ele.append("<tr><td>"+(i+1)+"</td><td>"+data.baseList[i]+"</td><td><a href='"+url+"'>"+url+"</a></td><td><i class=\"fa fa-times\" aria-hidden=\"true\" onclick='deleteReport(2)'></i></td></tr>");
 			}
 		}
 
-		function deleteReport() {
+		function deleteReport(folder) {
+			folder = (folder == 1) ? "products/" : "bases/";
 			var file = $(event.target).parents("tr").find("td").eq(1).html();
 			$.ajax({
 				url: "/admin/removeFile",
 				type: "POST",
-				data: {file: file}
+				data: {file: file, folder: folder}
 			}).success(function(res){
 				updateListDom(res);
 			});
-			//$(this.target)
 		}
 	</script>
 </body>

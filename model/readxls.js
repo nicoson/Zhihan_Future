@@ -5,16 +5,17 @@ var fs = require("fs");
 
 function readxls(){};
 
-readxls.read = function(url, res) {
+readxls.read = function(url, folder) {
 	var filename = path.basename(url);
-	var filedir = path.normalize(__dirname+'/'+'../docs/' + filename + ".xlsx");
+	console.log("readxls ====== " + filename);
+	var filedir = path.normalize(__dirname+'/'+'../docs/' + folder + filename + ".xlsx");
 	if(!fs.existsSync(filedir)) {
-		filedir = path.normalize(__dirname+'/'+'../docs/' + filename + ".xls");
+		filedir = path.normalize(__dirname+'/'+'../docs/' + folder + filename + ".xls");
 		if(!fs.existsSync(filedir)) {			
-			return res.render("badurl");
+			return null;
 		}
 	}
-	console.log(filedir);
+	console.log("readxls ====== " + filedir);
 
 	// parseXlsx(filedir, 1, function(err, data) {
 	// 	if(err) throw err;
@@ -39,7 +40,7 @@ readxls.read = function(url, res) {
 		}
 	}
 	//console.log(JSON.stringify(result[1]));
-	res.render('report', { title: 'Express', data: JSON.stringify(result) });
+	return result;
 }
 
 module.exports = readxls;
