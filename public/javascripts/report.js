@@ -7,8 +7,14 @@ $(document).ready(function(){
 	baseData = rawData.base;
 
 	for (var i=0; i<productData.length; i++) {
-		var reportObj = new ratioGenerator(productData[i]);
+		var adjbaseData = generateBaseData(productData[i].data, baseData[0].data);
+
+		var baseObj = new ratioGenerator(adjbaseData, 1);
+		baseObj.init();
+		var reportObj = new ratioGenerator(productData[i], 1);
 		reportObj.init();
+		
+		reportObj.DOMGenerator(baseObj);
 		$("section").append(reportObj.domEle);
 	}
 });
@@ -21,9 +27,12 @@ $(document).ready(function(){
 |=====  Core functions Objects ===|
 \*===============================*/
 
-function ratioGenerator(item) {
+function ratioGenerator(item, scope) {
 	this.sheet = item.sheetname;
 	this.data = item.data;
+	this.scope = scope;	//	days
+
+	this.risklessRate = 0.03;
 
 	this.dateArr = [];			//	Date type date array
 	this.dateArrStr = [];		//	formated date string array
@@ -54,7 +63,7 @@ function ratioGenerator(item) {
 		if(this.data.length == 0) return;
 		this.dataHandler();
 		this.ratioCalculator();
-		this.DOMGenerator();
+		// this.DOMGenerator();
 	}
 	
 	//	deal with raw data
@@ -103,7 +112,7 @@ function ratioGenerator(item) {
 		this.ratioObj.nhsyl = this.ratioObj.qjsyl*365/this.ratioObj.bd;
 		this.ratioObj.bdl = std(this.syl);
 		this.ratioObj.zdhc = maxDrawDone(this.jz);
-		this.ratioObj.xpz = (avg(this.syl) - 0.03/365) / std(this.syl) * Math.sqrt(365);
+		this.ratioObj.xpz = (avg(this.syl) - this.risklessRate/365) / std(this.syl) * Math.sqrt(365);
 		this.ratioObj.calmar = Math.abs(this.ratioObj.nhsyl/this.ratioObj.zdhc);
 
 		this.ratioObj.statYear = rateCal(this.dateIndexYear, this.jz);
@@ -111,7 +120,7 @@ function ratioGenerator(item) {
 	}
 
 	//	generate DOM element
-	this.DOMGenerator = function() {
+	this.DOMGenerator = function(baseData) {
 		this.domEle = reportTemplate();
 
 		//	add sheet name for report
@@ -127,6 +136,16 @@ function ratioGenerator(item) {
 		tableEle.eq(3).html((this.ratioObj.zdhc*100).toFixed(2)+"%");
 		tableEle.eq(4).html(this.ratioObj.xpz.toFixed(3));
 		tableEle.eq(5).html(this.ratioObj.calmar.toFixed(3));
+
+		if(baseData) {
+			tableEle = this.domEle.find(".table_all tr").eq(2).find("td");
+			tableEle.eq(0).html((baseData.ratioObj.qjsyl*100).toFixed(2)+"%");
+			tableEle.eq(1).html((baseData.ratioObj.nhsyl*100).toFixed(2)+"%");
+			tableEle.eq(2).html(baseData.ratioObj.bdl.toFixed(4));
+			tableEle.eq(3).html((baseData.ratioObj.zdhc*100).toFixed(2)+"%");
+			tableEle.eq(4).html(baseData.ratioObj.xpz.toFixed(3));
+			tableEle.eq(5).html(baseData.ratioObj.calmar.toFixed(3));
+		}
 
 		//	for yearly table
 		for(var i=0; i<this.ratioObj.statYear.length; i++) {
@@ -149,7 +168,7 @@ function ratioGenerator(item) {
 		//	for summary chart
 		var chartEle = document.createElement("div");
 		$(chartEle).attr("style", "width: 600px;height:400px;");
-		drawChart(this.jz, this.dateArrStr, chartEle);
+		drawChart(this.jz, this.dateArrStr, chartEle, baseData?baseData.jz:null);
 		this.domEle.find(".content-item").eq(1).append(chartEle);
 		//	for monthly rate
 		var chartEle2 = document.createElement("div");
@@ -239,11 +258,67 @@ function std(x) {
 	return Math.sqrt(vari/x.length);
 }
 
-function drawChart(xdata, ydata, ele) {
+function generateBaseData(base, raw) {
+	var target = base.map(function(e){return [e[0], 0, 0]});
+	var baseArr = base.map(function(e){return e[0];});
+	var rawArr = raw.map(function(e){return e[0];});
+
+	if(base[0][0] >= raw[0][0]) {
+		var ind = 0;
+		var indList = [];
+
+		for(var i=0; i<rawArr.length; i++) {
+			ind = baseArr.indexOf(rawArr[i]);
+			if(ind > -1) {
+				target[ind][1] = raw[i][1];
+				indList.push(ind);
+			}else{
+				console.warn("warning: data missing ......");
+			}
+		}
+
+		var step = 0;
+		var pace = 0;
+		for(var i=1; i<indList.length; i++) {
+			//	deal with data body
+			step = indList[i] - indList[i-1];
+			pace = (target[indList[i]][1] - target[indList[i-1]][1]) / step;
+			for(var j=1; j<step; j++) {
+				target[indList[i] - j][1] = target[indList[i]][1] - pace*j;
+			}
+
+			//	deal with head data
+			if(i == 1 && indList[0] != 0) {
+				for(var j=1; j<(indList[0]+1); j++) {
+					target[indList[0] - j][1] = target[indList[0]][1] - pace*j;
+				}
+			}
+
+			//	deal with tail data
+			if(i == indList.length-1 && indList[i] < target.length-1) {
+				for(var j=1; j < (target.length - indList[i]); j++) {
+					target[indList[i] + j][1] = target[indList[i]][1] + pace*j;
+				}
+			}
+		}
+
+		target[0][2] = target[0][1];
+
+		return {
+			sheetname: "baseLine",
+			data: target
+		};
+	}else{
+		return null;
+	}
+}
+
+function drawChart(ydata, xdata, ele, zdata) {
 	//var myChart = echarts.init(document.getElementById('chart_1'));
 	var myChart = echarts.init(ele);
-	for(var i=0; i<xdata.length; i++) {
-		xdata[i] = parseFloat(xdata[i].toFixed(4));
+	for(var i=0; i<ydata.length; i++) {
+		ydata[i] = parseFloat(ydata[i].toFixed(4));
+		zdata[i] = parseFloat(zdata[i].toFixed(4));
 	}
 
 	var option = {
@@ -275,25 +350,30 @@ function drawChart(xdata, ydata, ele) {
 	    xAxis: {
 	        type: 'category',
 	        boundaryGap: false,
-	        data: ydata
+	        data: xdata
 	    },
 	    yAxis: {
 	        type: 'value',
 	        scale: true
 	    },
 	    series: [
-	        // {
-	        //     name:'邮件营销',
-	        //     type:'line',
-	        //     data:[120, 132, 101, 134, 90, 230, 210]
-	        // },
 	        {
 	            name:'收益率（累计）',
 	            type:'line',
-	            data: xdata
+	            data: ydata
 	        }
 	    ]
 	};
+
+	if(zdata){
+		option.series.push(
+		    {
+		    	name:'基准收益率（累计）',
+		    	type: 'line',
+		    	data: zdata
+		    }
+	    );
+	}
 
 	myChart.setOption(option);
 }
