@@ -455,7 +455,8 @@ function drawChart2(data, ele) {
 	            itemStyle: {
 	            	normal: {
 	            		color: function(param) {
-	            			var colorlist = ['#d48265', '#6e7074'];
+	            			var colorlist = ['#f54545', '#0f990f'];
+	            			// var colorlist = ['#d48265', '#6e7074'];
 	            			if(param.data >= 0)
 	            				return colorlist[0];
 	            			else
