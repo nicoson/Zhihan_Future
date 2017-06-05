@@ -259,11 +259,19 @@ function std(x) {
 }
 
 function generateBaseData(base, raw) {
-	var target = base.map(function(e){return [e[0], 0, 0]});
+	var target = base.map(function(e){return [e[0], 0, 0];});
 	var baseArr = base.map(function(e){return e[0];});
 	var rawArr = raw.map(function(e){return e[0];});
 
-	if(base[0][0] >= raw[0][0]) {
+	if(base[0][0] <= raw.slice(-2)[0][0]){
+		var pos = -1;
+		var temp = [];
+		if(base[0][0] < raw[0][0]) {
+			var pos = baseArr.indexOf(rawArr[0]);
+			temp = target.splice(0,pos);
+			baseArr.splice(0,pos);
+		}
+
 		var ind = 0;
 		var indList = [];
 
@@ -302,15 +310,19 @@ function generateBaseData(base, raw) {
 			}
 		}
 
-		target[0][2] = target[0][1];
-
-		return {
-			sheetname: "baseLine",
-			data: target
-		};
+		temp.map(e => e[1] = target[0][1]);
+		target = temp.concat(target);
 	}else{
-		return null;
+		target.map(e => e[1]=1);
 	}
+
+	target[0][2] = target[0][1];
+
+	return {
+		sheetname: "baseLine",
+		data: target
+	};
+
 }
 
 function drawChart(ydata, xdata, ele, zdata) {
